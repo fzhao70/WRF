@@ -224,7 +224,11 @@ CC_TOOLS        =      $(SCC)
 ###########################################################
 #ARCH    Linux x86_64 ppc64le, PGI accelerator compiler with gcc # serial smpar dmpar dm+sm
 #
-DESCRIPTION     =       PGI ($SFC/$SCC): PGI accelerator
+# GPU Acceleration Configuration (Updated for modern NVIDIA GPUs)
+# Compute Capabilities: A100=cc80, V100=cc70, H100=cc90, A30=cc80
+# Change cc80 below to match your GPU architecture
+#
+DESCRIPTION     =       PGI ($SFC/$SCC): PGI accelerator (GPU-enabled dynamics)
 DMPARALLEL      =       # 1
 OMPCPP          =       # -D_OPENMP
 OMP             =       # -mp -Minfo=mp -Mrecursive
@@ -239,15 +243,16 @@ CC              =       CONFIGURE_CC
 LD              =       $(FC)
 RWORDSIZE       =       CONFIGURE_RWORDSIZE
 PROMOTION       =       -r$(RWORDSIZE) -i4
-ARCH_LOCAL      =       -DNONSTANDARD_SYSTEM_SUBR -D_ACCEL  CONFIGURE_D_CTSM
+ARCH_LOCAL      =       -DNONSTANDARD_SYSTEM_SUBR -D_ACCEL -DUSE_GPU_DYNAMICS CONFIGURE_D_CTSM
 CFLAGS_LOCAL    =       -w -O3 # -DRSL0_ONLY
 LDFLAGS_LOCAL   =
 CPLUSPLUSLIB    =
 ESMF_LDFLAG     =       $(CPLUSPLUSLIB)
-FCOPTIM         =       -Kieee -acc -ta=nvidia,fastmath,cuda5.0,cc35 -Mcuda -fastsse -Mvect=noaltcode -Msmartalloc -Mprefetch=distance:8  # -Minfo=all =Mneginfo=all
+# Updated GPU flags: managed memory, modern GPU arch, acceleration info
+FCOPTIM         =       -Kieee -acc -ta=nvidia,cc80 -Minfo=accel -gpu=managed -Mcuda -fastsse -Mvect=noaltcode -Msmartalloc -Mprefetch=distance:8
 FCREDUCEDOPT    =       $(FCOPTIM)
 FCNOOPT         =       -O0
-FCDEBUG         =       # -g $(FCNOOPT) -Kieee -acc -ta=nvidia,cuda5.0,cc35 -Mcuda # -C -Ktrap=fp -traceback
+FCDEBUG         =       # -g $(FCNOOPT) -Kieee -acc -ta=nvidia,cc80 -Mcuda # -C -Ktrap=fp -traceback
 FORMAT_FIXED    =       -Mfixed
 FORMAT_FREE     =       -Mfree
 FCSUFFIX        =

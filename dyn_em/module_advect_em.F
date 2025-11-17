@@ -6092,6 +6092,8 @@ SUBROUTINE advect_scalar_pd   ( field, field_old, tendency,    &
 
 !  WCS, 3 December 2002, 24 February 2003
 
+!$acc routine seq
+
    IMPLICIT NONE
    
    ! Input data
